@@ -5,19 +5,27 @@
     "name": "munjkim"
   },
   "metadata": {
-    "description": "Claude Code skills for English vocabulary tutoring: workbook photos to Markdown, and Markdown to printable quizzes",
-    "version": "1.0.0"
+    "description": "Photograph an English vocabulary workbook and get a Markdown word list, a printable A4 test paper and a matching answer key",
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "vocab-tutor-skills",
       "source": "./",
-      "description": "Turn photos of an English vocabulary workbook into Markdown, then into printable A4 test papers and answer keys",
-      "version": "1.0.0",
+      "description": "Photograph an English vocabulary workbook and get a Markdown word list, a printable A4 test paper and a matching answer key",
+      "version": "1.1.0",
       "author": {
         "name": "munjkim"
       },
-      "keywords": ["vocabulary", "english", "tutoring", "education", "worksheet", "korean", "ocr"],
+      "keywords": [
+        "vocabulary",
+        "english",
+        "tutoring",
+        "education",
+        "worksheet",
+        "korean",
+        "ocr"
+      ],
       "category": "productivity"
     }
   ]
