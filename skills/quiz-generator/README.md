@@ -1,9 +1,9 @@
-# vocabulary-quiz-generator
+# quiz-generator
 
 A Claude Code skill that turns a Day vocabulary Markdown file into a printable
 A4 test paper and matching answer key (HTML + PDF).
 
-Designed to pair with [`vocabulary-photo-to-md`](../vocabulary-photo-to-md),
+Designed to pair with [`photo-to-md`](../photo-to-md),
 which produces the Markdown from photos of a workbook.
 
 ## Install
@@ -11,7 +11,7 @@ which produces the Markdown from photos of a workbook.
 Copy the folder into your personal skills directory:
 
 ```bash
-cp -r vocabulary-quiz-generator ~/.claude/skills/
+cp -r quiz-generator ~/.claude/skills/
 ```
 
 ## Use
@@ -22,7 +22,7 @@ whether to include review words from earlier Days, then generate everything.
 Or run the scripts directly:
 
 ```bash
-SKILL=~/.claude/skills/vocabulary-quiz-generator/scripts
+SKILL=~/.claude/skills/quiz-generator/scripts
 
 python3 $SKILL/generate_quiz.py Day46.md   # HTML + PDF
 python3 $SKILL/verify_quiz.py  Day46.md   # automated checks
@@ -42,7 +42,7 @@ locates on its own. Pass `--no-pdf` to skip that step.
 
 ## Input format
 
-The Day Markdown is what `vocabulary-photo-to-md` writes:
+The Day Markdown is what `photo-to-md` writes:
 
 ```markdown
 # Day 46

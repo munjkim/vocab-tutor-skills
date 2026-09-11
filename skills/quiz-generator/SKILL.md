@@ -1,6 +1,6 @@
 ---
-name: vocabulary-quiz-generator
-description: Build a printable A4 vocabulary test paper and matching answer key (HTML + PDF) from a Day Markdown file produced by vocabulary-photo-to-md. Use when the user asks to make a vocabulary quiz, word test, or worksheet for a Day, or to turn Day46.md into a test paper and answer sheet. Asks whether to add review words the student got wrong on earlier Days, then generates both documents from one shared quiz definition so they always correspond. Korean triggers 한국어 트리거: 단어 시험지 만들어줘, Day 46 시험지, 영어 단어 시험지와 정답지, 단어 테스트 출제, 시험지 PDF로 뽑아줘, 이전 오답 포함해서 시험지.
+name: quiz-generator
+description: Build a printable A4 vocabulary test paper and matching answer key (HTML + PDF) from a Day Markdown file produced by photo-to-md. Use when the user asks to make a vocabulary quiz, word test, or worksheet for a Day, or to turn Day46.md into a test paper and answer sheet. Asks whether to add review words the student got wrong on earlier Days, then generates both documents from one shared quiz definition so they always correspond. Korean triggers 한국어 트리거: 단어 시험지 만들어줘, Day 46 시험지, 영어 단어 시험지와 정답지, 단어 테스트 출제, 시험지 PDF로 뽑아줘, 이전 오답 포함해서 시험지.
 ---
 
 # Vocabulary Quiz Generator
@@ -63,7 +63,7 @@ The generator finds Chrome or Chromium itself and renders the PDFs from the
 print CSS.
 
 ```bash
-SKILL=~/.claude/skills/vocabulary-quiz-generator/scripts
+SKILL=~/.claude/skills/quiz-generator/scripts
 
 python3 $SKILL/generate_quiz.py Day46.md
 #    with review words:    --wrong wrong_words.md

@@ -1,6 +1,6 @@
 ---
-name: vocabulary-photo-to-quiz
-description: Go from photos of an English vocabulary workbook straight to a printable test paper and answer key in one pass — extract the Day's words to Markdown, then generate the quiz PDFs. Use when the user attaches workbook photos and asks for a test paper, worksheet, or quiz without asking for the Markdown separately. Runs vocabulary-photo-to-md and then vocabulary-quiz-generator, stopping only if the extraction looks unreliable. Korean triggers 한국어 트리거: 사진으로 시험지 만들어줘, 교재 사진 주면 시험지까지, 사진에서 시험지 뽑아줘, Day 46 사진으로 단어 시험지, 한 번에 시험지까지 만들어줘.
+name: photo-to-quiz
+description: Go from photos of an English vocabulary workbook straight to a printable test paper and answer key in one pass — extract the Day's words to Markdown, then generate the quiz PDFs. Use when the user attaches workbook photos and asks for a test paper, worksheet, or quiz without asking for the Markdown separately. Korean triggers 한국어 트리거: 사진으로 시험지 만들어줘, 교재 사진 주면 시험지까지, 사진에서 시험지 뽑아줘, Day 46 사진으로 단어 시험지, 한 번에 시험지까지 만들어줘.
 ---
 
 # Workbook Photos → Test Paper
@@ -10,7 +10,7 @@ Run the whole pipeline in one pass: photos → `DayNN.md` → `DayNN-test.pdf` a
 
 Use this when the user wants the test paper and did not ask to see the Markdown
 as a separate deliverable. If they only want the word list, use
-`vocabulary-photo-to-md` alone.
+`photo-to-md` alone.
 
 Ask the one question in step 1, then run to the end without stopping. The only
 other interruption allowed is the checkpoint in step 3, and only when it trips.
@@ -25,7 +25,7 @@ Before touching the photos, ask:
 
 If **no**, or if the user already settled it in their request, carry on.
 
-If **yes**, collect the words the way `vocabulary-quiz-generator` describes —
+If **yes**, collect the words the way `quiz-generator` describes —
 take them in whatever form the user gives, read meanings from an earlier Day's
 Markdown when that file is available, and only ask about words you cannot find.
 Write them to `wrong_words.md` and pass `--wrong wrong_words.md` in step 4.
@@ -34,7 +34,7 @@ Ask this once, here. Do not raise it again later in the run.
 
 ### 2. Extract
 
-Invoke the **`vocabulary-photo-to-md`** skill and follow it exactly. Do not
+Invoke the **`photo-to-md`** skill and follow it exactly. Do not
 re-derive the extraction rules here — that skill owns them. It writes
 `DayNN.md` to the working directory.
 
@@ -55,18 +55,18 @@ If none of them is true, continue without asking.
 ### 4. Generate
 
 ```bash
-SKILL=~/.claude/skills/vocabulary-quiz-generator/scripts
+SKILL=~/.claude/skills/quiz-generator/scripts
 
 python3 $SKILL/generate_quiz.py Day46.md
 python3 $SKILL/verify_quiz.py  Day46.md
 ```
 
 Add `--wrong wrong_words.md` if step 1 produced any. See the
-`vocabulary-quiz-generator` skill for the full set of flags.
+`quiz-generator` skill for the full set of flags.
 
 This flow always produces a Day's first paper, so `--retest` never applies here.
 If the user wants a re-sit of a Day they already tested, they do not need new
-photos — send them to `vocabulary-quiz-generator` with the existing Markdown.
+photos — send them to `quiz-generator` with the existing Markdown.
 
 ### 5. Look at it
 

@@ -1,5 +1,5 @@
 ---
-name: vocabulary-photo-to-md
+name: photo-to-md
 description: Convert photos of an English vocabulary workbook into a structured Markdown study file. Use when the user attaches textbook photos and asks to organize a Day's vocabulary, extract headwords with parts of speech and Korean meanings, collect example sentences with their printed Korean translations, or produce a file such as Day46.md. Extracts only printed content in textbook order and excludes handwriting and grading marks. Applies to Day-based English vocabulary workbooks (워드마스터, 능률 보카, and similar). Korean triggers 한국어 트리거: 영어 단어 교재 사진 정리, Day 46 단어 정리, 사진 속 단어 정리해줘, 단어와 품사 뜻 추출, 예문과 해석 정리, 단어장 사진 마크다운으로, Day46.md로 만들어줘.
 ---
 
