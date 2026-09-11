@@ -18,19 +18,19 @@ Photograph the workbook page — handwriting, highlighter and grading marks and
 all. (English headwords are masked in this sample.)
 
 <p align="center">
-  <img src="docs/1-workbook-photo.jpg" width="88%" alt="Workbook page with handwritten marks">
+  <img src="docs/1-workbook-photo.jpg" width="55%" alt="Workbook page with handwritten marks">
 </p>
 
 <p align="center"><b>↓</b>&nbsp;&nbsp;<code>vocabulary-photo-to-md</code></p>
 
 <p align="center">
-  <img src="docs/2-markdown.png" width="78%" alt="The extracted Markdown word list">
+  <img src="docs/2-markdown.png" width="50%" alt="The extracted Markdown word list">
 </p>
 
 <p align="center"><b>↓</b>&nbsp;&nbsp;<code>vocabulary-quiz-generator</code></p>
 
 <p align="center">
-  <img src="docs/3-test-paper.png" width="68%" alt="The generated A4 test paper">
+  <img src="docs/3-test-paper.png" width="42%" alt="The generated A4 test paper">
 </p>
 
 An answer key is generated alongside the test paper, matching it question for
