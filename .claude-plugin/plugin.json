@@ -1,0 +1,10 @@
+{
+  "name": "vocab-tutor-skills",
+  "version": "1.0.0",
+  "description": "Turn photos of an English vocabulary workbook into Markdown, then into printable A4 test papers and answer keys",
+  "author": {
+    "name": "munjkim"
+  },
+  "keywords": ["vocabulary", "english", "tutoring", "education", "worksheet", "korean", "ocr"],
+  "license": "MIT"
+}
