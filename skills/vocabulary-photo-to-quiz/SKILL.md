@@ -12,19 +12,33 @@ Use this when the user wants the test paper and did not ask to see the Markdown
 as a separate deliverable. If they only want the word list, use
 `vocabulary-photo-to-md` alone.
 
-**Do not ask the user anything before starting.** The point of this skill is a
-single uninterrupted run. The only questions allowed are the checkpoint below,
-and only when it actually trips.
+Ask the one question in step 1, then run to the end without stopping. The only
+other interruption allowed is the checkpoint in step 3, and only when it trips.
 
 ## Steps
 
-### 1. Extract
+### 1. Ask about review words
+
+Before touching the photos, ask:
+
+> 이전 Day에서 틀린 단어를 복습 문항으로 추가할까요?
+
+If **no**, or if the user already settled it in their request, carry on.
+
+If **yes**, collect the words the way `vocabulary-quiz-generator` describes —
+take them in whatever form the user gives, read meanings from an earlier Day's
+Markdown when that file is available, and only ask about words you cannot find.
+Write them to `wrong_words.md` and pass `--wrong wrong_words.md` in step 4.
+
+Ask this once, here. Do not raise it again later in the run.
+
+### 2. Extract
 
 Invoke the **`vocabulary-photo-to-md`** skill and follow it exactly. Do not
 re-derive the extraction rules here — that skill owns them. It writes
 `DayNN.md` to the working directory.
 
-### 2. Checkpoint
+### 3. Checkpoint
 
 Before generating anything, check the Markdown you just wrote:
 
@@ -38,7 +52,7 @@ reprinting costs more than one question now.
 
 If none of them is true, continue without asking.
 
-### 3. Generate
+### 4. Generate
 
 ```bash
 SKILL=~/.claude/skills/vocabulary-quiz-generator/scripts
@@ -47,12 +61,14 @@ python3 $SKILL/generate_quiz.py Day46.md
 python3 $SKILL/verify_quiz.py  Day46.md
 ```
 
-Add `--wrong wrong_words.md` only if the user asked for review words in their
-original request. Do not raise the subject on your own — this flow is meant to
-run unattended. See the `vocabulary-quiz-generator` skill for the full set of
-flags and for how review words are collected when they are wanted.
+Add `--wrong wrong_words.md` if step 1 produced any. See the
+`vocabulary-quiz-generator` skill for the full set of flags.
 
-### 4. Look at it
+This flow always produces a Day's first paper, so `--retest` never applies here.
+If the user wants a re-sit of a Day they already tested, they do not need new
+photos — send them to `vocabulary-quiz-generator` with the existing Markdown.
+
+### 5. Look at it
 
 Render the test paper and read it as an image before reporting done:
 
@@ -63,7 +79,7 @@ sips -s format png --resampleWidth 1000 Day46-test.pdf --out /tmp/t.png
 Confirm nothing is cut off, no text overlaps, Korean renders, and no answer is
 visible on the test paper.
 
-### 5. Report
+### 6. Report
 
 Give the user, in this order:
 

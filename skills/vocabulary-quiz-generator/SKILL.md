@@ -13,12 +13,30 @@ match. Never generate the two documents independently.
 
 The documents are Korean study material; only these instructions are in English.
 
-## Before generating: ask about review words
+## Before generating: two questions
 
-Vocabulary review is cumulative, so **ask the user this before running the
-generator** — unless they already said in their request, or you were invoked
-from `vocabulary-photo-to-quiz`, which runs unattended and never raises the
-subject on its own:
+Ask both of these in one go, then generate. Skip either one the user already
+answered in their request.
+
+### Is this a re-sit?
+
+If a test paper for this Day already exists in the folder, ask:
+
+> 이 Day는 이미 시험지를 만들었습니다. 재시험인가요?
+
+If **yes**, pass `--retest`. The generator then picks a seed that none of the
+earlier papers for that Day used, so the student never gets the same question
+order, the same direction for each word, or the same four sentences twice. The
+files are numbered by attempt — `Day46-2-test.pdf`, `Day46-2-answer.pdf` — and
+the earlier papers are left untouched.
+
+If **no**, generate normally and the existing files are overwritten.
+
+If no test paper exists for the Day yet, do not ask — there is nothing to re-sit.
+
+### Review words
+
+Vocabulary review is cumulative, so ask:
 
 > 이전 Day에서 틀린 단어를 복습 문항으로 추가할까요?
 
@@ -49,10 +67,18 @@ SKILL=~/.claude/skills/vocabulary-quiz-generator/scripts
 
 python3 $SKILL/generate_quiz.py Day46.md
 #    with review words:    --wrong wrong_words.md
+#    a re-sit of this Day:  --retest
 #    to reproduce a paper: --seed 4821
 #    HTML only, no PDF:    --no-pdf
 
 python3 $SKILL/verify_quiz.py Day46.md
+```
+
+After a `--retest` run the files carry an attempt number, so verify that stem
+instead — the generator prints the exact command to use:
+
+```bash
+python3 $SKILL/verify_quiz.py Day46.md '' Day46-2
 ```
 
 The two **PDFs land next to the Day Markdown** — those are the files the tutor
@@ -102,7 +128,8 @@ in, and no answer is visible on the test paper.
   full sentences (`a bicycle frame`, `cotton fields`) are never used. The blank
   is sized to the answer, and the printed Korean translation sits on the right.
 - **Seed.** Randomly chosen unless `--seed` is given, and printed to the
-  terminal rather than onto the page. Passing the same seed reproduces the paper
+  terminal rather than onto the page. Under `--retest` the draw excludes every
+  seed already used for that Day. Passing the same seed reproduces the paper
   exactly — use it when fixing a mistake so the rest does not reshuffle, and
   tell the user the seed so they can ask for the same paper again. Adding or
   removing review words never changes the main 20 questions or the examples.

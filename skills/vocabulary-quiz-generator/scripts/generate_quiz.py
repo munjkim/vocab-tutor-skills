@@ -27,6 +27,23 @@ CHROME_PATHS = (
 )
 
 
+def previous_attempts(builddir, stem):
+    """Seeds already used for this Day, and the highest attempt number on disk."""
+    used, highest = set(), 0
+    pattern = re.compile(re.escape(stem) + r"(?:-(\d+))?-quiz\.json")
+    for f in sorted(builddir.glob(f"{stem}*-quiz.json")):
+        m = pattern.fullmatch(f.name)
+        if not m:
+            continue                      # a different Day that shares the prefix
+        try:
+            used.add(json.loads(f.read_text(encoding="utf-8")).get("seed"))
+        except (ValueError, OSError):
+            continue
+        highest = max(highest, int(m.group(1) or 1))
+    used.discard(None)
+    return used, highest
+
+
 def find_chrome():
     for path in CHROME_PATHS:
         if Path(path).exists():
@@ -323,32 +340,55 @@ def main():
     ap.add_argument("--outdir", help="Output directory (default: next to the input file)")
     ap.add_argument("--examples", type=int, default=4, help="Number of cloze examples")
     ap.add_argument("--no-pdf", action="store_true", help="Write HTML only, skip PDF rendering")
+    ap.add_argument("--retest", action="store_true",
+                    help="Re-sit of a Day already tested: pick a seed none of the "
+                         "earlier papers used and number the files by attempt")
     args = ap.parse_args()
 
     title, entries = parse_markdown(args.input)
     extras = parse_wrong_words(args.wrong) if args.wrong else []
-    seed = args.seed if args.seed is not None else random.randint(1000, 9999)
-
-    quiz = build_quiz(title, entries, extras, seed, args.examples)
 
     stem = Path(args.input).stem
     outdir = Path(args.outdir) if args.outdir else Path(args.input).resolve().parent
     builddir = outdir / BUILD_DIR
     builddir.mkdir(parents=True, exist_ok=True)
 
+    used, highest = previous_attempts(builddir, stem)
+    if args.retest:
+        attempt = highest + 1
+        if not used:
+            print("  주의: 이 Day의 이전 시험지가 없어 1회차로 만듭니다.")
+            attempt = 1
+    else:
+        attempt = 1
+    suffix = "" if attempt == 1 else f"-{attempt}"
+
+    if args.seed is not None:
+        seed = args.seed
+    else:
+        # A retest must not repeat a paper the student has already sat.
+        seed = random.randint(1000, 9999)
+        while args.retest and seed in used:
+            seed = random.randint(1000, 9999)
+
+    quiz = build_quiz(title, entries, extras, seed, args.examples)
+
+    out = stem + suffix
     html = {}
-    (builddir / f"{stem}-quiz.json").write_text(
+    (builddir / f"{out}-quiz.json").write_text(
         json.dumps(quiz, ensure_ascii=False, indent=2), encoding="utf-8")
     for kind, is_answer in (("test", False), ("answer", True)):
-        html[kind] = builddir / f"{stem}-{kind}.html"
+        html[kind] = builddir / f"{out}-{kind}.html"
         html[kind].write_text(render(quiz, is_answer), encoding="utf-8")
 
     n_en = sum(1 for w in quiz["words"] if w["direction"] == "en")
-    print(f"{title}  seed={seed}")
+    print(f"{title}  {attempt}회차  seed={seed}"
+          + (f"  (이전 시드 {sorted(used)} 회피)" if args.retest and used else ""))
     print(f"  words    {len(quiz['words'])}  (영어 답 {n_en} / 한국어 답 {len(quiz['words']) - n_en})")
     print(f"  examples {len(quiz['examples'])}  "
           f"(활용형 {sum(1 for e in quiz['examples'] if e['inflected'])})")
     print(f"  build    {builddir}/")
+    print(f"  verify   python3 verify_quiz.py {args.input} '' {out}")
 
     if args.no_pdf:
         return
@@ -357,7 +397,7 @@ def main():
         print("  PDF      건너뜀 (Chrome 또는 Chromium을 찾지 못함)")
         return
     for kind, src in html.items():
-        pdf = outdir / f"{stem}-{kind}.pdf"
+        pdf = outdir / f"{out}-{kind}.pdf"
         subprocess.run([chrome, "--headless", "--disable-gpu", "--no-pdf-header-footer",
                         f"--print-to-pdf={pdf}", src.resolve().as_uri()],
                        check=True, capture_output=True)

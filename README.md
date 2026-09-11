@@ -72,6 +72,10 @@ The test paper puts 20 words in a two-up table — half ask for the English word
 half for the Korean meaning — followed by four cloze sentences that prefer
 inflected forms (`framed`, `spotted`, `ran across`).
 
+Ask for a Day the student has already sat and Claude offers a re-sit: same
+words, but a question order, direction and set of sentences that none of the
+earlier papers for that Day used.
+
 ## What the extraction skill will not do
 
 - It copies the printed translation; it never writes its own.

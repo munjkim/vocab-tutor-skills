@@ -35,6 +35,7 @@ python3 $SKILL/verify_quiz.py  Day46.md   # automated checks
 | `--outdir DIR` | Output directory (default: next to the input file) |
 | `--examples N` | Number of cloze sentences (default 4) |
 | `--no-pdf` | Write HTML only and skip PDF rendering |
+| `--retest` | Re-sit of a Day already tested: draws a seed none of the earlier papers used and numbers the files by attempt (`Day46-2-test.pdf`) |
 
 PDFs are rendered from the print CSS with headless Chrome, which the generator
 locates on its own. Pass `--no-pdf` to skip that step.
