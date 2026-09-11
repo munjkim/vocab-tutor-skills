@@ -12,6 +12,23 @@ are organised into numbered Days.
 | `vocabulary-photo-to-md` | Reads photos of a workbook page and writes `Day46.md` — headwords, meanings, example sentences and their printed translations. Skips handwriting and grading marks. |
 | `vocabulary-quiz-generator` | Turns `Day46.md` into `Day46-test.pdf` and `Day46-answer.pdf` — a two-up word table plus cloze sentences, ready to print. |
 
+## What it looks like
+
+Photograph the workbook page — handwriting, highlighter and grading marks and
+all. (English headwords are masked in these samples.)
+
+<p>
+  <img src="docs/input-workbook-1.jpg" width="49%" alt="Workbook page with handwritten marks">
+  <img src="docs/input-workbook-2.jpg" width="49%" alt="Second workbook page">
+</p>
+
+You get a clean Markdown word list, and from that, a test paper and answer key:
+
+<p>
+  <img src="docs/output-test.png" width="49%" alt="Generated test paper">
+  <img src="docs/output-answer.png" width="49%" alt="Generated answer key">
+</p>
+
 ## Install
 
 ```
