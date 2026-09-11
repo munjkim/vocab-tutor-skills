@@ -15,8 +15,10 @@ The documents are Korean study material; only these instructions are in English.
 
 ## Before generating: ask about review words
 
-Vocabulary review is cumulative, so **always ask the user this before running
-the generator** (unless they already said in their request):
+Vocabulary review is cumulative, so **ask the user this before running the
+generator** — unless they already said in their request, or you were invoked
+from `vocabulary-photo-to-quiz`, which runs unattended and never raises the
+subject on its own:
 
 > 이전 Day에서 틀린 단어를 복습 문항으로 추가할까요?
 

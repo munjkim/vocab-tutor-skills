@@ -11,6 +11,7 @@ are organised into numbered Days.
 | --- | --- |
 | `vocabulary-photo-to-md` | Reads photos of a workbook page and writes `Day46.md` — headwords, meanings, example sentences and their printed translations. Skips handwriting and grading marks. |
 | `vocabulary-quiz-generator` | Turns `Day46.md` into `Day46-test.pdf` and `Day46-answer.pdf` — a two-up word table plus cloze sentences, ready to print. |
+| `vocabulary-photo-to-quiz` | Runs both of the above in one pass, for when you want the test paper and do not need the Markdown as a separate step. |
 
 ## How it works
 
@@ -36,6 +37,10 @@ all. (English headwords are masked in this sample.)
 An answer key is generated alongside the test paper, matching it question for
 question.
 
+Each arrow is a skill you can invoke on its own. `vocabulary-photo-to-quiz`
+runs both of them back to back, stopping only if the extraction looks
+unreliable — a misread word or a page that is not a full Day.
+
 ## Install
 
 ```
@@ -56,6 +61,11 @@ example sentences and the printed Korean translations. Then ask:
 
 Claude asks whether to add review words the student missed on earlier Days, then
 writes `Day47-test.pdf` and `Day47-answer.pdf` next to the Markdown.
+
+To skip the middle step entirely, attach the photos and ask for the test paper
+directly:
+
+> 사진으로 Day 47 시험지 만들어줘
 
 The test paper puts 20 words in a two-up table — half ask for the English word,
 half for the Korean meaning — followed by four cloze sentences that prefer
