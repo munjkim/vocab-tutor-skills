@@ -25,8 +25,8 @@ all. (English headwords are masked in these samples.)
 You get a clean Markdown word list, and from that, a test paper and answer key:
 
 <p>
-  <img src="docs/output-test.png" height="440" alt="Generated test paper">
-  <img src="docs/output-answer.png" height="440" alt="Generated answer key">
+  <img src="docs/output-test.png" height="470" alt="Generated test paper">
+  <img src="docs/output-answer.png" height="470" alt="Generated answer key">
 </p>
 
 ## Install
