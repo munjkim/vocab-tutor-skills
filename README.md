@@ -18,15 +18,15 @@ Photograph the workbook page — handwriting, highlighter and grading marks and
 all. (English headwords are masked in these samples.)
 
 <p>
-  <img src="docs/input-workbook-1.jpg" width="49%" alt="Workbook page with handwritten marks">
-  <img src="docs/input-workbook-2.jpg" width="49%" alt="Second workbook page">
+  <img src="docs/input-workbook-1.jpg" height="360" alt="Workbook page with handwritten marks">
+  <img src="docs/input-workbook-2.jpg" height="360" alt="Second workbook page">
 </p>
 
 You get a clean Markdown word list, and from that, a test paper and answer key:
 
 <p>
-  <img src="docs/output-test.png" width="49%" alt="Generated test paper">
-  <img src="docs/output-answer.png" width="49%" alt="Generated answer key">
+  <img src="docs/output-test.png" height="470" alt="Generated test paper">
+  <img src="docs/output-answer.png" height="470" alt="Generated answer key">
 </p>
 
 ## Install
