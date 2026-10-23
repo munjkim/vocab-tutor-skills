@@ -77,7 +77,7 @@ def main(src_md, outdir=None, stem=None):
     ok_sent = all(e["en"][0].isupper() and e["en"][-1] in ".?!" for e in quiz["examples"])
     check("예문이 모두 온전한 문장", ok_sent)
     check("예문 빈칸이 정확한 활용형을 대체",
-          all(BOLD_RE.search(e["en_md"]).group(1) == e["answer"] for e in quiz["examples"]))
+          all(" ".join(BOLD_RE.findall(e["en_md"])) == e["answer"] for e in quiz["examples"]))
     check("예문 한국어 번역이 원본과 일치",
           all(src_ex[e["en"]]["ko"] == e["ko"] for e in quiz["examples"]))
 
@@ -89,6 +89,7 @@ def main(src_md, outdir=None, stem=None):
                     test_html.split('<section class="examples">')[1].split(e["ko"])[0]
                     for e in quiz["examples"])
     check("예문 정답이 시험지에 노출되지 않음", blanks_ok)
+    check("시험지에 마크다운 별표 없음", "**" not in test_html)
 
     ok_ans = True
     for w in quiz["words"]:

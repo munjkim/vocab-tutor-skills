@@ -105,12 +105,13 @@ def parse_markdown(path):
         m = EXAMPLE_RE.match(line)
         if m:
             en, ko = m.group(1).strip(), m.group(2).strip()
-            bold = BOLD_RE.search(en)
+            # a separated phrasal verb has several bold spans: **Put** your hand **up**
+            bold = " ".join(BOLD_RE.findall(en))
             current["examples"].append({
                 "en_md": en,
                 "en": strip_bold(en),
                 "ko": ko,
-                "target": bold.group(1) if bold else None,
+                "target": bold or None,
                 "sentence": is_sentence(en),
             })
     if title is None:
@@ -232,10 +233,10 @@ def fmt_prompt(sense):
 def blank_html(en_md, answer, reveal):
     if reveal:
         return BOLD_RE.sub(
-            lambda m: f'<span class="filled">{html.escape(m.group(1))}</span>', en_md, count=1)
-    width = max(5.0, len(answer) * 0.85)
+            lambda m: f'<span class="filled">{html.escape(m.group(1))}</span>', en_md)
     return BOLD_RE.sub(
-        lambda m: f'<span class="blank" style="width:{width:.1f}em"></span>', en_md, count=1)
+        lambda m: f'<span class="blank" style="width:{max(5.0, len(m.group(1)) * 0.85):.1f}em"></span>',
+        en_md)
 
 
 CSS = """

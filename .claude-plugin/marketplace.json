@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Photograph an English vocabulary workbook and get a Markdown word list, printable A4 test papers — daily or midterm — with matching answer keys",
-    "version": "1.4.0"
+    "version": "1.4.1"
   },
   "plugins": [
     {
       "name": "vocab-tutor-skills",
       "source": "./",
       "description": "Photograph an English vocabulary workbook and get a Markdown word list, printable A4 test papers — daily or midterm — with matching answer keys",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "author": {
         "name": "munjkim"
       },
