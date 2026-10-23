@@ -28,6 +28,14 @@ python3 $SKILL/generate_quiz.py Day46.md   # HTML + PDF
 python3 $SKILL/verify_quiz.py  Day46.md   # automated checks
 ```
 
+Pass several Day files to build a midterm instead — 20 words drawn evenly
+from all of them, written as `Day46-50-midterm-test.pdf`:
+
+```bash
+python3 $SKILL/generate_quiz.py Day{46..50}.md
+python3 $SKILL/verify_quiz.py  Day46.md '' Day46-50-midterm
+```
+
 | Flag | Meaning |
 | --- | --- |
 | `--wrong FILE` | Markdown list of review words to append as extra questions |

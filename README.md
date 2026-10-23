@@ -1,9 +1,10 @@
 # vocab-tutor-skills
 
-Three [Claude Code](https://claude.com/claude-code) skills for English
+Four [Claude Code](https://claude.com/claude-code) skills for English
 vocabulary tutoring. Photograph a workbook page, get a clean Markdown word list,
 then turn that list into a printable A4 test paper and answer key — or go from
-the photos straight to the test paper in one pass.
+the photos straight to the test paper in one pass. Every few Days, a midterm
+draws from all of them.
 
 Built for Korean vocabulary workbooks (워드마스터, 능률 보카, and similar) that
 are organised into numbered Days.
@@ -13,6 +14,7 @@ are organised into numbered Days.
 | `photo-to-md` | Reads photos of a workbook page and writes `Day46.md` — headwords, meanings, example sentences and their printed translations. Skips handwriting and grading marks. |
 | `quiz-generator` | Turns `Day46.md` into `Day46-test.pdf` and `Day46-answer.pdf` — a two-up word table plus cloze sentences, ready to print. |
 | `photo-to-quiz` | Runs both of the above in one pass, for when you want the test paper and do not need the Markdown as a separate step. |
+| `midterm-quiz` | Turns a range of Day files — five by default — into `Day46-50-midterm-test.pdf` and its answer key: the same paper format, 20 words spread evenly across the Days. |
 
 ## How it works
 
@@ -76,6 +78,15 @@ Ask for a Day the student has already sat and Claude offers a re-sit: same
 words, but a question order, direction and set of sentences that none of the
 earlier papers for that Day used.
 
+Every five Days, ask for a midterm:
+
+> 중간 테스트 만들어줘
+
+Claude takes the five most recent Day files — or the range you name, such as
+`Day 46~52` — and builds one paper from them: 20 words, four from each Day,
+plus four cloze sentences, in the same format as a daily paper, titled
+`단어 시험지 Day 46-50 Review`.
+
 ## What the extraction skill will not do
 
 - It copies the printed translation; it never writes its own.
@@ -91,6 +102,8 @@ SKILL=~/.claude/plugins/marketplaces/vocab-tutor-skills/skills/quiz-generator/sc
 
 python3 $SKILL/generate_quiz.py Day46.md          # HTML + PDF
 python3 $SKILL/verify_quiz.py  Day46.md           # automated checks
+
+python3 $SKILL/generate_quiz.py Day{46..50}.md    # midterm across Days 46–50
 ```
 
 It writes the PDFs next to the input file and puts the HTML and the shared quiz

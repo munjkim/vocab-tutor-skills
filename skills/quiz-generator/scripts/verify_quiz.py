@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from generate_quiz import (parse_markdown, fmt_senses, fmt_prompt, BOLD_RE,
-                           strip_bold, BUILD_DIR)
+                           strip_bold, BUILD_DIR, MIDTERM_WORDS)
 
 checks = []
 
@@ -19,9 +19,12 @@ def check(name, ok, detail=""):
 def main(src_md, outdir=None, stem=None):
     outdir = Path(outdir) if outdir else Path(src_md).resolve().parent
     stem = stem or Path(src_md).stem
-    title, entries = parse_markdown(src_md)
     build = outdir / BUILD_DIR
     quiz = json.loads((build / f"{stem}-quiz.json").read_text(encoding="utf-8"))
+    # A midterm records the Day files it drew from; a single Day is just src_md.
+    sources = quiz.get("sources") or [src_md]
+    days = [parse_markdown(p)[1] for p in sources]
+    entries = [e for d in days for e in d]
     test_html = (build / f"{stem}-test.html").read_text(encoding="utf-8")
     ans_html = (build / f"{stem}-answer.html").read_text(encoding="utf-8")
 
@@ -29,14 +32,27 @@ def main(src_md, outdir=None, stem=None):
     main_words = [w for w in quiz["words"] if not w["extra"]]
     quiz_heads = [w["headword"] for w in main_words]
 
-    check("표제어가 모두 출제됨", sorted(src_heads) == sorted(quiz_heads),
-          f"원본 {len(src_heads)} / 출제 {len(quiz_heads)}")
+    if len(sources) == 1:
+        check("표제어가 모두 출제됨", sorted(src_heads) == sorted(quiz_heads),
+              f"원본 {len(src_heads)} / 출제 {len(quiz_heads)}")
+    else:
+        check("출제 단어가 모두 범위 안의 Day에 있음", set(quiz_heads) <= set(src_heads))
+        check(f"단어 {MIDTERM_WORDS}개", len(quiz_heads) == MIDTERM_WORDS, str(len(quiz_heads)))
+        day_of = {}
+        for i, d in enumerate(days):
+            for e in d:
+                day_of.setdefault(e["headword"].lower(), i)
+        counts = [sum(1 for h in quiz_heads if day_of[h.lower()] == i) for i in range(len(days))]
+        check("Day별로 고르게 출제", max(counts) - min(counts) <= 1,
+              " / ".join(map(str, counts)))
     check("중복 출제 없음", len(quiz_heads) == len(set(quiz_heads)))
     n_en = sum(1 for w in main_words if w["direction"] == "en")
     check("영어 답 / 한국어 답 절반씩", abs(n_en - (len(main_words) - n_en)) <= 1,
           f"영어 {n_en} / 한국어 {len(main_words) - n_en}")
 
-    by_head = {e["headword"]: e for e in entries}
+    by_head = {}
+    for e in entries:
+        by_head.setdefault(e["headword"], e)
     ok_pos, bad = True, []
     for w in main_words:
         if w["direction"] != "en":

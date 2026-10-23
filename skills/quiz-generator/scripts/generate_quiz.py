@@ -21,6 +21,7 @@ PLAIN_RE = re.compile(r"^-\s+(.+?):\s*(.+)$")
 EXAMPLE_RE = re.compile(r"^-\s+(.*\S)\s+\((.+)\)\s*$")
 BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
 BUILD_DIR = "build"
+MIDTERM_WORDS = 20
 CHROME_PATHS = (
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     "/Applications/Chromium.app/Contents/MacOS/Chromium",
@@ -139,6 +140,23 @@ def parse_wrong_words(path):
 
 
 # ---------------------------------------------------------------- quiz build
+
+def pick_words(days, n, rng):
+    """Spread n words as evenly as possible across several Days. A headword that
+    appears in more than one Day is kept only from the first."""
+    seen, pools = set(), []
+    for entries in days:
+        pool = [e for e in entries if e["headword"].lower() not in seen]
+        seen.update(e["headword"].lower() for e in pool)
+        rng.shuffle(pool)
+        pools.append(pool)
+    picked = []
+    while len(picked) < n and any(pools):
+        for pool in pools:
+            if pool and len(picked) < n:
+                picked.append(pool.pop())
+    return picked
+
 
 def build_quiz(title, entries, extras, seed, n_examples=4):
     rng = random.Random(seed)
@@ -334,7 +352,9 @@ def render(quiz, answer_key):
 
 def main():
     ap = argparse.ArgumentParser(description="Vocabulary quiz generator")
-    ap.add_argument("input", help="Day Markdown file (e.g. Day46.md)")
+    ap.add_argument("input", nargs="+",
+                    help="Day Markdown file (e.g. Day46.md); several files make a "
+                         "midterm of 20 words drawn from all of them")
     ap.add_argument("--wrong", help="Markdown file of review words from earlier Days")
     ap.add_argument("--seed", type=int, help="Random seed (default: random 4-digit)")
     ap.add_argument("--outdir", help="Output directory (default: next to the input file)")
@@ -345,11 +365,17 @@ def main():
                          "earlier papers used and number the files by attempt")
     args = ap.parse_args()
 
-    title, entries = parse_markdown(args.input)
+    midterm = len(args.input) > 1
+    if midterm:
+        args.input.sort(key=lambda p: int(re.sub(r"\D", "", Path(p).stem) or 0))
+        first, last = (re.sub(r"\D", "", Path(p).stem) for p in (args.input[0], args.input[-1]))
+        title, stem = f"Day {first}-{last} Review", f"Day{first}-{last}-midterm"
+    else:
+        title, entries = parse_markdown(args.input[0])
+        stem = Path(args.input[0]).stem
     extras = parse_wrong_words(args.wrong) if args.wrong else []
 
-    stem = Path(args.input).stem
-    outdir = Path(args.outdir) if args.outdir else Path(args.input).resolve().parent
+    outdir = Path(args.outdir) if args.outdir else Path(args.input[0]).resolve().parent
     builddir = outdir / BUILD_DIR
     builddir.mkdir(parents=True, exist_ok=True)
 
@@ -371,7 +397,12 @@ def main():
         while args.retest and seed in used:
             seed = random.randint(1000, 9999)
 
+    if midterm:
+        days = [parse_markdown(p)[1] for p in args.input]
+        entries = pick_words(days, MIDTERM_WORDS, random.Random(seed))
     quiz = build_quiz(title, entries, extras, seed, args.examples)
+    if midterm:
+        quiz["sources"] = [str(Path(p).resolve()) for p in args.input]
 
     out = stem + suffix
     html = {}
@@ -388,7 +419,7 @@ def main():
     print(f"  examples {len(quiz['examples'])}  "
           f"(활용형 {sum(1 for e in quiz['examples'] if e['inflected'])})")
     print(f"  build    {builddir}/")
-    print(f"  verify   python3 verify_quiz.py {args.input} '' {out}")
+    print(f"  verify   python3 verify_quiz.py {args.input[0]} '' {out}")
 
     if args.no_pdf:
         return

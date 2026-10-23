@@ -1,7 +1,7 @@
 {
   "name": "vocab-tutor-skills",
-  "version": "1.3.0",
-  "description": "Photograph an English vocabulary workbook and get a Markdown word list, a printable A4 test paper and a matching answer key",
+  "version": "1.4.0",
+  "description": "Photograph an English vocabulary workbook and get a Markdown word list, printable A4 test papers — daily or midterm — with matching answer keys",
   "author": {
     "name": "munjkim"
   },
